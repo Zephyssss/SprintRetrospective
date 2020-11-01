@@ -8,7 +8,7 @@ const TagSchema = new mongoose.Schema(
       min: 1,
       max: 30,
     },
-    tagname: {
+    information: {
       type: String,
       default:""
     },

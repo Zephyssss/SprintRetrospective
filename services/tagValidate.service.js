@@ -12,4 +12,28 @@ const createTagValidation = (data) => {
   return schema.validate(data);
 };
 
+//Validate data of tag before update
+const updateTagValidation = (data) => {
+  const schema = joi.object({
+    id: joi.string().required(),
+    tagname: joi.string().min(1).max(30),
+    information: joi.string(),
+    type: joi.number().integer().min(1).max(3),
+  });
+
+  return schema.validate(data);
+};
+
+//Validate data of tag before delete
+const deleteTagValidation = (data) => {
+  const schema = joi.object({
+    id: joi.string().required(),
+  });
+
+  return schema.validate(data);
+};
+
+module.exports.deleteTagValidation = deleteTagValidation;
+module.exports.updateTagValidation = updateTagValidation;
 module.exports.createTagValidation = createTagValidation;
+

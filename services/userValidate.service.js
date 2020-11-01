@@ -24,5 +24,15 @@ const loginValidation = (data) => {
   return schema.validate(data);
 };
 
+//Upadate name user
+const updateUserValidation = (data) => {
+  const schema = joi.object({
+    name: joi.string().min(3).max(30).required(),
+  });
+
+  return schema.validate(data);
+};
+
+module.exports.updateUserValidation = updateUserValidation;
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
