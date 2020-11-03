@@ -1,6 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const fs = require("fs")
+const yaml = require("js-yaml")
 
 const routes = require("./routes/index.js");
 const AppError = require("./utils/appError.js");
@@ -18,13 +21,18 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//Document apis
+const swaggerFile= fs.readFileSync("./swagger.yaml")
+const swaggerDocs = yaml.safeLoad(swaggerFile)
+app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 // Routes
 app.use("/api/v1", routes);
 
 // handle undefined Routes
 app.use("*", (req, res, next) => {
-  const err = new AppError(404, "fail", "undefined route");
-  next(err, req, res, next);
+  const err = new AppError(404, "undefined route");
+  next(err);
 });
 
 app.use(handlerError);

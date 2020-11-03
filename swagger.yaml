@@ -1,0 +1,75 @@
+#https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md
+#https://swagger.io/docs/specification/basic-structure/
+
+openapi: 3.0.0
+info:
+  title: Sprint Retrospective
+  description: This is a Api for Sprint retrospective.
+  contact:
+    name: Đinh Ngọc
+    url: https://www.facebook.com/ngoc861999
+    email: ngoc861999@gmail.com
+  version: 1.0.0
+servers:
+- url: http://localhost:8080/api/v1
+  description: Development server
+components:
+  schemas:
+    Board:
+      type: object
+      properties:
+        boardname:
+          type: string
+        iduser:
+          type: string
+        isshare:
+          type: boolean
+paths:
+  /board:
+    get:
+      summary: Retrive list board
+      description: Retrive list board of user
+      responses:
+        '200':
+          description: retrive list board success
+          content:
+            'application/json': {}
+    post:
+      summary: Create new board
+      description: Create new board of user
+      responses:
+        '201':
+          description: create board success
+          content:
+            'application/json': {}
+            'application/xml': {}
+        '400':
+          description: bad request
+          content:
+            'application/json': {}
+            'application/xml': {}
+      parameters:
+      - name: auth-token
+        in: header
+        description: Authentication user
+        schema:
+          type: string
+      requestBody:
+        description: input data of board
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                boardname:
+                  description: Name of board
+                  type: string
+                isshare:
+                  description: true if user wanna share board
+                  type: boolean
+              required:
+              - boardname
+              - isshare 
+            example:
+              boardname: Web nâng cao 
+              isshare: true

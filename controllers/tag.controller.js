@@ -4,8 +4,8 @@ const { deleteTagValidation } = require("../services/tagValidate.service.js");
 const Tag = require("../models/tag.model.js");
 const AppError = require("../utils/appError.js");
 
-//Get list tag
-exports.getListTag = async (req, res, next) => {
+//Retrive list tag
+exports.retriveListTag = async (req, res, next) => {
   try {
     const listTag = await Tag.find({idboard: req.params.id });
     res.status(200).json({ total: listTag.length, data: listTag });
@@ -19,7 +19,7 @@ exports.createTag = async (req, res, next) => {
   //Validate data before create
   const valid = await createTagValidation({ ...req.body });
   if (valid.error) {
-    const err = new AppError(400, "Bad request", valid.error.details[0].message);
+    const err = new AppError(400, valid.error.details[0].message);
     return next(err);
   }
 
@@ -39,7 +39,7 @@ exports.deleteTag = async (req, res, next) => {
   //Validate data before create
   const valid = await deleteTagValidation({ id: req.params.id });
   if (valid.error) {
-    const err = new AppError( 400, "Bad request", valid.error.details[0].message);
+    const err = new AppError( 400, valid.error.details[0].message);
     return next(err);
   }
 
@@ -47,7 +47,7 @@ exports.deleteTag = async (req, res, next) => {
   try {
     const del = await Tag.findByIdAndDelete(req.params.id);
     if (!del) {
-      const err = new AppError(404, "Not found", "Class not found");
+      const err = new AppError(404, "Tag not found");
       return next(err);
     }
     res.status(200).json(del);
@@ -61,7 +61,7 @@ exports.updateTag= async (req, res, next) => {
   //Validate data before update
   const valid = await updateTagValidation({ id: req.params.id, ...req.body });
   if (valid.error) {
-    const err = new AppError(400,"Bad request",valid.error.details[0].message);
+    const err = new AppError(400, valid.error.details[0].message);
     return next(err);
   }
 
@@ -70,7 +70,7 @@ exports.updateTag= async (req, res, next) => {
   try{
     retriveTag= await Tag.findOne({_id: req.params.id});
     if (!retriveTag) {
-      const err = new AppError(404, "Not found", "Not found Tag");
+      const err = new AppError(404, "Tag not found");
       return next(err);
     }
   }
@@ -87,7 +87,7 @@ exports.updateTag= async (req, res, next) => {
   try {
     const update = await Tag.findByIdAndUpdate(req.params.id, retriveTag);
     if (!update) {
-      const err = new AppError(404,"Not found", valid.error.details[0].message);
+      const err = new AppError(404, valid.error.details[0].message);
       return next(err);
     }
     

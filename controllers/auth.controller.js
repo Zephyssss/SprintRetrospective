@@ -10,15 +10,15 @@ exports.registerUsername = async (req, res, next) => {
   //Validate data before save user
   const valid = await UserValidate.registerValidation({ ...req.body });
   if (valid.error) {
-    const err = new AppError(400,"Bad request",valid.error.details[0].message);
-    return next(err, req, res, next);
+    const err = new AppError(400, valid.error.details[0].message);
+    return next(err);
   }
 
   //Check username
   const usernameExist = await User.findOne({ username: req.body.username });
   if (usernameExist) {
-    const err = new AppError(409, "Conflict", "Username exist");
-    return next(err, req, res, next);
+    const err = new AppError(409 , "Username exist");
+    return next(err);
   }
 
   //Hash password
@@ -45,22 +45,22 @@ exports.loginUsername = async (req, res,next) => {
   //Validate data before check login
   const valid = await UserValidate.loginValidation({ ...req.body });
   if (valid.error) {
-    const err = new AppError(400,"Bad request",valid.error.details[0].message);
-    return next(err, req, res, next);
+    const err = new AppError(400, valid.error.details[0].message);
+    return next(err);
   }
 
   //Check username exist
   const user = await User.findOne({ username: req.body.username });
   if (!user) {
-    const err = new AppError(400, "Bad request", "Email or password wrong");
-    return next(err, req, res, next);
+    const err = new AppError(400, "Email or password wrong");
+    return next(err);
   }
 
   //Compare password
   const acceptLogin = await bcrypt.compare(req.body.password, user.password);
   if (!acceptLogin) {
-    const err = new AppError(400, "Bad request", "Email or password wrong");
-    return next(err, req, res, next);
+    const err = new AppError(400, "Email or password wrong");
+    return next(err);
   }
 
   //Send token
@@ -77,7 +77,7 @@ exports.verifyToken = (req, res, next) => {
 
   //Check client fill auth-token yet!
   if (!token) {
-    const err = new AppError(403, "Forbidden", "Access Denied, please fill auth-token in Header");
+    const err = new AppError(403, "Access Denied, please fill auth-token in Header");
     return next(err);
   }
 

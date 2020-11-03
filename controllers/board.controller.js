@@ -9,7 +9,7 @@ exports.createBoard = async (req, res, next) => {
   //Validate data before create
   const valid = await createBoardValidation({ ...req.body });
   if (valid.error) {
-    const err = new AppError(400, "Bad request", valid.error.details[0].message);
+    const err = new AppError(400, valid.error.details[0].message);
     return next(err);
   }
 
@@ -36,21 +36,21 @@ exports.updateBoard = async (req, res, next) => {
   //Validate data before update
   const valid = await updateBoardValidation({ id: req.params.id, ...req.body });
   if (valid.error) {
-    const err = new AppError(400,"Bad request",valid.error.details[0].message);
+    const err = new AppError(400, valid.error.details[0].message);
     return next(err);
   }
 
-  let retriveBoard = null;
   //check board exist
+  let retriveBoard = null;
   try{
     retriveBoard = await Board.findOne({_id: req.params.id, iduser: req.user._id });
+    if (!retriveBoard) {
+      const err = new AppError(404, valid.error.details[0].message);
+      return next(err);
+    }
   }
   catch(err){
     next(err)
-  }
-  if (!retriveBoard) {
-    const err = new AppError(404, "Not found", valid.error.details[0].message);
-    return next(err);
   }
 
   //update data local
@@ -61,7 +61,7 @@ exports.updateBoard = async (req, res, next) => {
   try {
     const update = await Board.findByIdAndUpdate(req.params.id, retriveBoard);
     if (!update) {
-      const err = new AppError(404,"Not found", valid.error.details[0].message);
+      const err = new AppError(404, valid.error.details[0].message);
       return next(err);
     }
     
@@ -86,7 +86,7 @@ exports.deleteBoard = async (req, res, next) => {
   //Validate data before create
   const valid = await deleteBoardValidation({ id: req.params.id });
   if (valid.error) {
-    const err = new AppError( 400, "Bad request", valid.error.details[0].message);
+    const err = new AppError( 400, valid.error.details[0].message);
     return next(err);
   }
 
@@ -94,7 +94,7 @@ exports.deleteBoard = async (req, res, next) => {
   try {
     const del = await Board.findByIdAndDelete(req.params.id);
     if (!del) {
-      const err = new AppError(404, "Not found", "Class not found");
+      const err = new AppError(404, "Board not found");
       return next(err);
     }
     res.status(200).json(del);

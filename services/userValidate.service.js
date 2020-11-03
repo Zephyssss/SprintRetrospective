@@ -24,7 +24,7 @@ const loginValidation = (data) => {
   return schema.validate(data);
 };
 
-//Upadate name user
+//Validate data before update name user
 const updateUserValidation = (data) => {
   const schema = joi.object({
     name: joi.string().min(3).max(30).required(),
