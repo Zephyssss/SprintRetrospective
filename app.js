@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Document apis
-const swaggerFile= fs.readFileSync("./swagger.yaml")
+const swaggerFile=fs.readFileSync("./swagger.yaml")
 const swaggerDocs = yaml.safeLoad(swaggerFile)
 app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 

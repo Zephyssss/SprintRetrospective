@@ -11,57 +11,117 @@ info:
     email: ngoc861999@gmail.com
   version: 1.0.0
 servers:
-- url: http://localhost:8080/api/v1
-  description: Development server
+- url: https://sprintretrospective.herokuapp.com/api/v1
+  description: HOST SERVER
+- url: http://localhost:{PORT}/api/v1
+  description: DEVELOPMENT SERVER
+  variables:
+    PORT:
+      enum:
+      - '8080'
+      - '3000'
+      default: '8080'
 components:
   schemas:
     Board:
       type: object
       properties:
+        _id:
+          type: string
         boardname:
           type: string
         iduser:
           type: string
         isshare:
           type: boolean
+        date:
+          type: string
+          format: date-time
+  parameters:  
+    idboard:
+      name: id
+      in: path
+      description: id of board
+      required: true
+      schema:
+        type: string
+  securitySchemes: #https://swagger.io/docs/specification/authentication/api-keys/
+    Token: #arbitrary name for the security scheme
+      type: apiKey
+      name: auth-token
+      in: header
 paths:
-  /board:
+  /board/{id}:
     get:
+      tag: Board
       summary: Retrive list board
       description: Retrive list board of user
+      parameters:
+      - $ref: '#/components/parameters/idboard'
+      - name: Name Param 1
+        in: header
+        description: Parameter 1 description
+        required: false
+        schema:
+          type: string
+      - name: Name Param 2
+        in: query
+        description: Parameter 2 description
+        schema:
+          type: string
       responses:
         '200':
-          description: retrive list board success
+          description: Retrive list board success
           content:
-            'application/json': {}
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Board'
+            'application/xml':
+              schema:
+                $ref: '#/components/schemas/Board'
+      security:
+        - Token: []
+#######################################################################     
+  /board:
     post:
       summary: Create new board
       description: Create new board of user
       responses:
         '201':
-          description: create board success
+          description: Create board success
           content:
-            'application/json': {}
-            'application/xml': {}
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Board'
+            'application/xml':
+              schema:
+                $ref: '#/components/schemas/Board'
         '400':
-          description: bad request
+          description: Bad request
           content:
-            'application/json': {}
-            'application/xml': {}
-      parameters:
-      - name: auth-token
-        in: header
-        description: Authentication user
-        schema:
-          type: string
-      requestBody:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+            'application/xml':
+              schema:
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      requestBody:  #https://swagger.io/docs/specification/describing-request-body/
         description: input data of board
         required: true
         content:
           application/json:
             schema:
+              type: object
               properties:
-                boardname:
+                boardname: # <--- body name
                   description: Name of board
                   type: string
                 isshare:
@@ -70,6 +130,19 @@ paths:
               required:
               - boardname
               - isshare 
-            example:
-              boardname: Web nâng cao 
-              isshare: true
+            examples:
+              example_1: # <--- example name
+                summary: summary example_1
+                value:
+                  boardname: Web nâng cao 1 
+                  isshare: true
+              example_2: # <--- example name
+                summary: summary example_2
+                value:
+                  boardname: Web nâng cao 2
+                  isshare: false
+      security:
+        - Token: []
+
+
+              
