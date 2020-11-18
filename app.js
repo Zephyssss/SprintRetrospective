@@ -2,8 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
-const fs = require("fs")
-const yaml = require("js-yaml")
+const fs = require("fs");
+const yaml = require("js-yaml");
 
 const routes = require("./routes/index.js");
 const AppError = require("./utils/appError.js");
@@ -22,8 +22,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Document apis
-const swaggerFile=fs.readFileSync("./swagger.yaml")
-const swaggerDocs = yaml.safeLoad(swaggerFile)
+const swaggerFile = fs.readFileSync("./swagger.yaml");
+const swaggerDocs = yaml.safeLoad(swaggerFile);
 app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Routes
